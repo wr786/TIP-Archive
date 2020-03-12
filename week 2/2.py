@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # author: wr786
-student_id = 1900011029
+# student_id = 隐去私人信息
 
 # reading data
 dataFile = open("./50万人名.txt", "r", encoding="utf-8")
