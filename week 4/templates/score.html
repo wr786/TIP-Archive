@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<head>
+    <title>成绩查询</title>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        td {
+            text-align: center;
+            padding: 4px;
+            width: 16%;
+            overflow: hidden;
+        }
+
+        .visual {
+            width: 20%;
+            padding: 0px;
+        }
+
+        .green {
+            background: linear-gradient(to right, rgb(159, 255, 128), rgb(140, 255, 102));
+            text-align: left;
+            padding: 3%
+        }
+
+        .yellow {
+            background: linear-gradient(to right, rgb(255, 223, 128), rgb(255, 217, 102));
+            text-align: left;
+            padding: 3%
+        }
+
+        .red {
+            background: linear-gradient(to right, rgb(255, 134, 128), rgb(255, 110, 102));
+            text-align: left;
+            padding: 3%
+        }
+    </style>
+</head>
+
+<body>
+    <div name="hint">排序方式: {{sort_type}}</div>
+    <form action="/" method="POST">
+        <input type="radio" name="sort_method" value="0" id="name" {{name_checked}}>
+        <label for="name">姓名</label>
+        <input type="radio" name="sort_method" value="1" id="usual_score" {{usual_score_checked}}>
+        <label for="usual_score">平时成绩</label>
+        <input type="radio" name="sort_method" value="2" id="midterm_score" {{midterm_score_checked}}>
+        <label for="midterm_score">期中成绩</label>
+        <input type="radio" name="sort_method" value="3" id="final_score" {{final_score_checked}}>
+        <label for="final_score">期末成绩</label>
+        <input type="radio" name="sort_method" value="4" id="total_score" {{total_score_checked}}>
+        <label for="total_score">总成绩</label>
+        <br />
+        <input type="radio" name="sort_order" value="1" id="up_order" {{up_order_checked}}>
+        <label for="up_order">升序</label>
+        <input type="radio" name="sort_order" value="-1" id="down_order" {{down_order_checked}}>
+        <label for="down_order">降序</label>
+        <br />
+        <input type="submit">
+    </form>
+    <table cellpadding='0' cellspacing='0' border="1" width="60%">
+        <tr>
+            <th>姓名</th>
+            <th>平时成绩</th>
+            <th>期中成绩</th>
+            <th>期末成绩</th>
+            <th>总成绩</th>
+            <th>可视</th>
+        </tr>
+        {{student_score_table|safe}}
+    </table>
+</body>
