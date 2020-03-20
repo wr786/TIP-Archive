@@ -1,0 +1,34 @@
+.main {
+    margin: 10px auto;
+    padding: 20px;
+    background: #EEE;
+    width: 80em;
+    zoom: 1;
+}
+
+.header {
+    text-align: center;
+}
+
+.navigator {
+    margin: auto;
+    width: 100%;
+    display: inline-block;
+}
+
+.navigator_item {
+    float: left;
+    width: 33%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+.navigator_item:hover {
+    color: violet;
+}
+
+footer {
+    color: gray;
+    text-align: center;
+}

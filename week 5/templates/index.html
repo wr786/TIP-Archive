@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>首页 | 北京地铁统计信息</title>
+    <script src="js/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/general.css">
+    <link rel="stylesheet" href="./css/rainbow_table.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+            <h1>北京地铁统计信息</h1>
+        </div>
+        <div class="navigator"> 
+            <a class="navigator_item" href="/SubwayPeople">地铁内人数时间分布</a>
+            <a class="navigator_item" href="/StationIO">进出站人数时间分布</a>
+            <a class="navigator_item" href="/LineIO">线路进出站人数分布</a>
+        </div>
+        {{last_table|safe}}
+        <!-- 上次作业内容 -->
+        <footer>
+            <table class="file_list" border="1" cellpadding='0' cellspacing='0'>
+                <tr><th>文件名</th><th>功能</th></tr>
+                <tr class="py"><td>main.py</td><td>主程序</td></tr>
+                <tr class="html"><td>index.html</td><td>首页</td></tr>
+                <tr class="css"><td>general.css</td><td>整体通用的css样式</td></tr>
+                <tr class="css"><td>rainbow_table.css</td><td>给当前这个表格着色用的样式</td></tr>
+            </table>
+            <p>©2020 wr786</p>
+        </footer>
+    </div>
+</body>

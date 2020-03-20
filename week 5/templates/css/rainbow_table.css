@@ -1,0 +1,21 @@
+.file_list {
+    text-align: center;
+    width: 60%;
+    margin: auto;
+}
+
+.file_list th, td {
+    padding: 0.2em;
+}
+
+.py{
+    color: yellowgreen;
+}
+
+.html{
+    color: red;
+}
+
+.css {
+    color: blue;
+}
