@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>首页 | 北京地铁统计信息</title>
-    <script src="js/jquery.min.js"></script>
-    <link rel="stylesheet" href="./css/general.css">
-    <link rel="stylesheet" href="./css/rainbow_table.css">
+    <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/rainbow_table.css') }}">
 </head>
 
 <body>
     <div class="main">
         <div class="header">
-            <h1>北京地铁统计信息</h1>
+            <a class="header_link" href="/">北京地铁统计信息</a>
         </div>
         <div class="navigator"> 
             <a class="navigator_item" href="/SubwayPeople">地铁内人数时间分布</a>

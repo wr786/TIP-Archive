@@ -7,7 +7,12 @@
 }
 
 .header {
+    font-size: 2em;
     text-align: center;
+}
+
+.header_link {
+    color: #404040;
 }
 
 .navigator {
@@ -20,15 +25,34 @@
     float: left;
     width: 33%;
     text-align: center;
-    text-decoration: none;
     font-size: 1.2em;
 }
 
-.navigator_item:hover {
+a {
+    text-decoration: none !important;
+}
+
+a:hover {
     color: violet;
+}
+
+.activated {
+    color: red;
 }
 
 footer {
     color: gray;
     text-align: center;
+}
+
+table {
+    text-align: center;
+    width: 60%;
+    margin: auto;
+}
+
+.incar_cnt {
+    background: linear-gradient(to right, rgb(255, 223, 128), rgb(255, 217, 102));
+    text-align: left;
+    padding:1%;
 }

@@ -6,6 +6,7 @@
 
 .file_list th, td {
     padding: 0.2em;
+    font-weight: bolder;
 }
 
 .py{
