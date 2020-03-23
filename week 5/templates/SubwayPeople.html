@@ -17,9 +17,11 @@
             <a class="navigator_item" href="/StationIO">进出站人数时间分布</a>
             <a class="navigator_item" href="/LineIO">线路进出站人数分布</a>
         </div>
-        <table class="onefifth" border="1" cellpadding='0' cellspacing='0'> 
+        <table cellpadding='0' cellspacing='0'> 
+            <col style="width: 15%" />
+            <col style="width: 85%" />
             <tr><th>时间段</th><th>地铁内人数</th></tr>
-            <tr><td>4:00~4:04</td><td><div class="incar_cnt" style="width: 37%;">37</div></td></tr> 
+            <!-- <tr><td>4:00~4:04</td><td><div class="incar_cnt" style="width: 37%; background: green;">37</div></td></tr>  -->
             {{table_innerHTML|safe}}
         </table>
         <footer>

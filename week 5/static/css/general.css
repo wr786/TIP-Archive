@@ -47,12 +47,28 @@ footer {
 
 table {
     text-align: center;
-    width: 60%;
+    width: 100%;
     margin: auto;
 }
 
+td {
+    overflow: hidden;
+}
+
 .incar_cnt {
-    background: linear-gradient(to right, rgb(255, 223, 128), rgb(255, 217, 102));
     text-align: left;
-    padding:1%;
+    padding-top:1%;
+    padding-bottom: 1%;
+}
+
+.green {
+    background: linear-gradient(to right, rgb(159, 255, 128), rgb(140, 255, 102));
+}
+
+.yellow {
+    background: linear-gradient(to right, rgb(255, 223, 128), rgb(255, 217, 102));
+}
+
+.red {
+    background: linear-gradient(to right, rgb(255, 134, 128), rgb(255, 110, 102));
 }
