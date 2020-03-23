@@ -61,14 +61,26 @@ td {
     padding-bottom: 1%;
 }
 
-.green {
-    background: linear-gradient(to right, rgb(159, 255, 128), rgb(140, 255, 102));
+.downStation {
+    font-size: 2px;
+    background: #9600FF;
+    display:inline-block;
 }
 
-.yellow {
-    background: linear-gradient(to right, rgb(255, 223, 128), rgb(255, 217, 102));
+.upStation {
+    font-size: 2px;
+    background: #B51F1A;
+    display:inline-block;
 }
 
-.red {
-    background: linear-gradient(to right, rgb(255, 134, 128), rgb(255, 110, 102));
+.timeTag {
+    font-size: 2px;
+    background: white;
+    display:inline-block;
+}
+
+.tdLine {
+    padding: 0;
+    text-align: center;
+    float:inline-start;
 }

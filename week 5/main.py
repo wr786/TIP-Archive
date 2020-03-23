@@ -5,9 +5,20 @@ import os
 app = Flask(__name__)
 
 peopleData = []
-# carType,icID,cardType,tradeType,UpLine,UpTime,UpStation,DownLine,DownTime,DownStation,State       
-#   0       1      2        3       4       5      6         7        8         9        10
+#! carType,icID,cardType,tradeType,UpLine,UpTime,UpStation,DownLine,DownTime,DownStation,State       
+#!   0       1      2        3       4       5      6         7        8         9        10
+stationIDs = []
+stationsInLine = {} # {lineID: set(stations)}
+timeIntervals_15min = []
 SubwayPeopleData = {} # {("HHMM", "HHMM"): cnt}
+StationIOData = {} # {stationID: {("HHMM", "HHMM"): [upCnt, downCnt]}}
+
+def get_stationID(line, station):
+    return str(line).zfill(2) + "->" + str(station).zfill(2)
+
+def parse_stationID(stationID):
+    pos = stationID.find('->')
+    return (int(stationID[:pos]), int(stationID[pos+2:]))
 
 def readInData():
     print("[INFO] 程序开始运行。\n")
@@ -15,9 +26,30 @@ def readInData():
     cnt = 0
     for line in f:
         cnt += 1
-        peopleData.append(line.split(','))
+        people = line.split(',')
+        if cnt > 1:
+            people[4] = int(people[4])
+            people[6] = int(people[6])
+            people[7] = int(people[7])
+            people[9] = int(people[9])
+        peopleData.append(people)
     f.close()
     peopleData.pop(0) # 去除标题行
+    # 计算每条line下的stations
+    for people in peopleData:
+        if people[4] not in stationsInLine.keys():
+            stationsInLine.update({people[4]: {people[6]}})
+        else:
+            stationsInLine[people[4]].add(people[6])
+        if people[7] not in stationsInLine.keys():
+            stationsInLine.update({people[7]: {people[9]}})
+        else:
+            stationsInLine[people[7]].add(people[9])
+    # 计算总共有哪些station
+    for line in stationsInLine.keys():
+        for station in stationsInLine[line]:
+            if get_stationID(line, station) not in stationIDs:
+                stationIDs.append(get_stationID(line, station))
     print("[INFO] 数据读取成功！\n")
     
 def nxt_minute(t, delta=1):
@@ -31,7 +63,7 @@ def nxt_minute(t, delta=1):
     return str(hur).zfill(2) + str(mnt).zfill(2)
 
 def get_time_interval(t, delta=5):
-    # 输入"HHMMSS"返回("HHMM", "HHMM")
+    # 输入"HHMMSS"或"HHMM"返回("HHMM", "HHMM")
     hur = int(t[:2])
     mnt = int(t[2:4])
     mnt_inf = (mnt//delta)*delta
@@ -56,6 +88,29 @@ def calc_SubwayPeople():
         SubwayPeopleData[get_time_interval(people[5][-6:])] += 1
         SubwayPeopleData[get_time_interval(people[8][-6:])] -= 1
         # SubwayPeopleData[get_time_interval(nxt_minute(people[8][-6:-2], 5) + people[8][-2:])] -= 1
+    print("[INFO] SubwayPeople数据计算完成！\n")
+
+def calc_stationIO():
+    curTime = "0000"
+    while True: # 初始化timeIntevals_15min
+        timeIntervals_15min.append(get_time_interval(curTime, 15))
+        curTime = nxt_minute(curTime, 15)
+        if curTime == "0000":
+            break
+    StationIOData.update({786: {("ERROR", "ERROR"): [0, 0]}}) # 占位用
+    for time_interval in timeIntervals_15min: # 初始化一个计算所有站点总数的特殊key
+        StationIOData[786].update({time_interval: [0, 0]})
+    for stationID in stationIDs: # 初始化
+        StationIOData.update({stationID: {("ERROR", "ERROR"): [0, 0]}}) # 占位用
+        for time_interval in timeIntervals_15min:
+            StationIOData[stationID].update({time_interval: [0, 0]})
+    for people in peopleData:
+        StationIOData[get_stationID(people[4], people[6])][get_time_interval(people[5][-6:], 15)][0] += 1
+        StationIOData[get_stationID(people[7], people[9])][get_time_interval(people[8][-6:], 15)][1] += 1
+        StationIOData[786][get_time_interval(people[5][-6:], 15)][0] += 1
+        StationIOData[786][get_time_interval(people[8][-6:], 15)][1] += 1
+    print("[INFO] StationIO数据计算完成！")
+
 
 def toHex(r, g, b):
     color = "#"
@@ -78,6 +133,16 @@ def getcolor(num, lim):
         r = 255
     return toHex(r, g, b)
 
+def get_stationIO_cell(time_interval, cnt, divisor=50):
+    time_interval_formatted = f'{format_time_interval(time_interval[0])}~{format_time_interval(time_interval[1])}'
+    upCnt = cnt[0] 
+    downCnt = cnt[1]
+    return f"""<div class="tdLine">
+                    <div class="upStation" style="width: {upCnt/divisor}%;">{upCnt}</div>
+                    <div class="timeTag" style="width: 5%;">{time_interval_formatted}</div>
+                    <div class="downStation" style="width: {downCnt/divisor}%;">{downCnt}</div>
+                </div>"""
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -94,7 +159,32 @@ def SubwayPeople():
         tableSP += f'<div class="incar_cnt" style="width: {curCnt / 8000}%; background: {getcolor(curCnt, 800000)};">{curCnt}</div> </td></tr>'
     return render_template("SubwayPeople.html", table_innerHTML=tableSP)
 
+@app.route("/StationIO", methods=['GET','POST'])
+def StationIO():
+    selectedStations = request.form.getlist("checklist")
+    formSIO = ""
+    tableSIO = ""
+    last = "06"
+    for stationID in stationIDs:
+        if stationID[:2] != last:
+            formSIO += '<br/>'
+            last = stationID[:2]
+        formSIO += f'<input name="checklist" type="checkbox" value="{stationID}" ID="{stationID}" {"checked" if stationID in selectedStations else "unchecked"}/><label for="{stationID}">{stationID}</label>'
+    #! 采取th为站点名的方式（不然宽度爆炸了
+    tableSIO += "<tr><th>所有站点</th>"
+    for station in selectedStations:
+        tableSIO += f"<th>{station}</th>"
+    tableSIO += "</tr>"
+    # 写入全天所有站进站人数、出战人数
+    for time_interval in timeIntervals_15min:
+        tableSIO += f"<tr> <td>{get_stationIO_cell(time_interval, StationIOData[786][time_interval], 5000)}</td>"
+        for station in selectedStations:
+            tableSIO += f"<td>{get_stationIO_cell(time_interval, StationIOData[station][time_interval])}</td>"
+        tableSIO += "</tr>"
+    return render_template("StationIO.html", table_innerHTML=tableSIO, form_innerHTML=formSIO)
+
 if __name__ == "__main__":
     readInData()
     calc_SubwayPeople()
+    calc_stationIO()
     app.run(debug=True) 
