@@ -19,13 +19,17 @@
             <a class="navigator_item" href="/StationIO">进出站人数时间分布</a>
             <a class="activated navigator_item" href="/LineIO">线路进出站人数分布</a>
         </div>
-        <div class="hint">现在正在显示的是{{hint}}的人数时间分布</div>
-        <form action="/LineIO" method="POST">
-            {{form_innerHTML|safe}}
-            <!-- <input name="checklist" type="radio" value="1" ID="1" checked/><label for="1">test</label> -->
-            <br />
-            <input type="submit">
-        </form>
+        <fieldset>
+            <legend>
+                <div class="hint">现在正在显示的是{{hint}}的人数时间分布</div>
+            </legend>
+            <form action="/LineIO" method="POST">
+                {{form_innerHTML|safe}}
+                <!-- <input name="checklist" type="radio" value="1" ID="1" checked/><label for="1">test</label> -->
+                <br />
+                <input type="submit">
+            </form>
+        </fieldset><br/>
         <table border="1" cellpadding='0' cellspacing='0'>
             {{table_innerHTML|safe}}
         </table>

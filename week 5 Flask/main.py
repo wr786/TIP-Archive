@@ -160,24 +160,28 @@ def SubwayPeople():
 @app.route("/StationIO", methods=['GET','POST'])
 def StationIO():
     selectedStations = request.form.get("checklist", False)
+    if selectedStations == "False":
+        selectedStations = False
     formSIO = ""
     tableSIO = ""
-    last = "06" # 第一行的线路编号
+    hint_data = ""
+    formSIO += f'<select name="checklist">'
+    formSIO += f'<option value="{False}" ID="default">请选择站点</option>'
     for stationID in stationIDs:
-        if stationID[:2] != last:
-            formSIO += '<br/>'
-            last = stationID[:2]
-        formSIO += f'<input name="checklist" type="radio" value="{stationID}" ID="{stationID}" {"checked" if stationID == selectedStations else "unchecked"}/><label for="{stationID}">{stationID}</label>'
+        formSIO += f'<option value="{stationID}" ID="{stationID}">{stationID}</option>'
+    formSIO += '</select>'
     #! 转置表格，不然宽度爆炸了
     if selectedStations == False:
         tableSIO += "<tr><th>所有站点</th></tr>"
         for time_interval in timeIntervals_15min:
             tableSIO += f'<tr><td>{get_stationIO_cell(time_interval, StationIOData[786][time_interval], 8000)}</td></tr>'
+        hint_data = "全部站点"
     else:
         tableSIO += f"<tr><th>{selectedStations}</th></tr>"
         for time_interval in timeIntervals_15min:
             tableSIO += f"<tr><td>{get_stationIO_cell(time_interval, StationIOData[selectedStations][time_interval])}</td></tr>"
-    return render_template("StationIO.html", table_innerHTML=tableSIO, form_innerHTML=formSIO)
+        hint_data = "站点" + selectedStations
+    return render_template("StationIO.html", table_innerHTML=tableSIO, form_innerHTML=formSIO, hint=hint_data)
 
 @app.route("/LineIO", methods=['GET', 'POST'])
 def LineIO():
@@ -210,7 +214,7 @@ def LineIO():
             tableLIO += f'<tr><td>{format_time_interval(time_interval[0])}~{format_time_interval(time_interval[1])}</td>'
             for station in stationsInLine[int(selectedLines[0])]:
                 station_id = get_stationID(selectedLines[0], station)
-                tableLIO += f'<td>{get_stationIO_cell(time_interval, StationIOData[station_id][time_interval], 80, False, 2)}</td>'
+                tableLIO += f'<td>{get_stationIO_cell(time_interval, StationIOData[station_id][time_interval], 100, False, 2)}</td>'
             tableLIO += '</tr>'
         hint_data = "线路" + selectedLines + "的各个站点"
     else: # 显示线路表
@@ -221,7 +225,7 @@ def LineIO():
         for time_interval in timeIntervals_15min:
             tableLIO += f'<tr><td>{format_time_interval(time_interval[0])}~{format_time_interval(time_interval[1])}</td>'
             for line in LineIOData.keys():
-                tableLIO += f'<td>{get_stationIO_cell(time_interval, LineIOData[line][time_interval], 500, False, 2)}</td>'
+                tableLIO += f'<td>{get_stationIO_cell(time_interval, LineIOData[line][time_interval], 800, False, 2)}</td>'
             tableLIO += '</tr>'
         hint_data = "各个线路"
     return render_template("LineIO.html", table_innerHTML=tableLIO, form_innerHTML=formLIO, hint=hint_data)
@@ -232,7 +236,6 @@ if __name__ == "__main__":
     calc_stationIO()
     app.run(debug=True) 
 
-#todo 加上select
 #todo 加上图标
 #todo 给标题加上avatar
-#todo 美化UI
+#todo 完成首页

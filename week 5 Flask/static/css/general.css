@@ -107,7 +107,13 @@ td {
 }
 
 .hint {
-    text-align: center;
+    /* text-align: center; */
     font-weight: bolder;
     font-size: 1em;
+}
+
+.form_packer {
+    margin:auto;
+    /* width: 40%;
+    padding: 0, auto; */
 }
