@@ -6,11 +6,14 @@
     <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/general.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/rainbow_table.css') }}">
+    <link rel="icon" href="{{ url_for('static',filename='imgs/logo.png') }}" sizes="32x32">
 </head>
 
 <body>
     <div class="main">
         <div class="header">
+            <img src="{{ url_for('static',filename='imgs/logo.png') }}">
+            <br/>
             <a class="header_link" href="/">北京地铁统计信息</a>
         </div>
         <div class="navigator"> 
@@ -18,15 +21,31 @@
             <a class="navigator_item" href="/StationIO">进出站人数时间分布</a>
             <a class="navigator_item" href="/LineIO">线路进出站人数分布</a>
         </div>
+        <!-- 代码复用，用来表示三列分别代表什么数据 -->
+        <br/>
+        <div class="navigator"> 
+            <a class="nonehover navigator_item">PeopleBtwStation</a>
+            <a class="nonehover navigator_item">PeopleInCarTime</a>
+            <a class="nonehover navigator_item">PeopleOutHomeTime</a>
+        </div>
         {{last_table|safe}}
         <!-- 上次作业内容 -->
+        <br/>
         <footer>
             <table class="file_list" border="1" cellpadding='0' cellspacing='0'>
                 <tr><th>文件名</th><th>功能</th></tr>
-                <tr class="py"><td>main.py</td><td>主程序</td></tr>
-                <tr class="html"><td>index.html</td><td>首页</td></tr>
-                <tr class="css"><td>general.css</td><td>整体通用的css样式</td></tr>
-                <tr class="css"><td>rainbow_table.css</td><td>给当前这个表格着色用的样式</td></tr>
+                <tr class="py"><td>./main.py</td><td>主程序</td></tr>
+                <tr class="html"><td>./templates/index.html</td><td>首页</td></tr>
+                <tr class="html"><td>./templates/LineIO.html</td><td>线路进出站人数分布</td></tr>
+                <tr class="html"><td>./templates/StationIO.html</td><td>进出站人数时间分布</td></tr>
+                <tr class="html"><td>./templates/SubwayPeople.html</td><td>地铁内人数时间分布</td></tr>
+                <tr class="css"><td>./static/css/general.css</td><td>整体通用的css样式</td></tr>
+                <tr class="css"><td>./static/css/rainbow_table.css</td><td>给当前这个表格着色用的样式</td></tr>
+                <tr class="js"><td>./static/js/jquery.min.js</td><td>jQuery</td></tr>
+                <tr class="data"><td>./data/PeopleBtwStation.txt</td><td>上次作业所得的数据</td></tr>
+                <tr class="data"><td>./data/PeopleInCarTime.txt</td><td>上次作业所得的数据</td></tr>
+                <tr class="data"><td>./data/PeopleOutHomeTime.txt</td><td>上次作业所得的数据</td></tr>
+                <tr class="data"><td>./static/imgs/logo.png</td><td>logo</td></tr>
             </table>
             <p>©2020 wr786</p>
         </footer>

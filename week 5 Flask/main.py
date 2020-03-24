@@ -10,6 +10,7 @@ peopleData = []
 stationIDs = []
 stationsInLine = {} # {lineID: set(stations)}
 timeIntervals_15min = []
+indexData = "" # 存取上次作业的表格的字符串
 SubwayPeopleData = {} # {("HHMM", "HHMM"): cnt}
 StationIOData = {} # {stationID: {("HHMM", "HHMM"): [upCnt, downCnt]}}
 LineIOData = {} # {LineID: {("HHMM", "HHMM"): [upCnt, downCnt]}}
@@ -75,6 +76,28 @@ def format_time_interval(t):
     # 输入"HHMM"返回"HH:MM"
     return t[:2] + ":" + t[2:]
 
+def toHex(r, g, b):
+    color = "#"
+    color += str(hex(r)).replace('x','0')[-2:]
+    color += str(hex(g)).replace('x','0')[-2:]
+    color += str(hex(b)).replace('x','0')[-2:]
+    return color
+
+def getcolor(num, lim):
+    halfLim = lim / 2
+    cell = 255 / halfLim
+    r = 0
+    g = 0
+    b = 0
+    if num < halfLim:
+        r = int(cell * num)
+        g = 255
+    else:
+        g = int(max(0, 255 - ((num-halfLim)*cell)))
+        r = 255
+    return toHex(r, g, b)
+
+
 def calc_SubwayPeople():    
     curTime = "0000" #! 采取以00:00为0人的记录方法
     while True: # 初始化
@@ -110,26 +133,33 @@ def calc_stationIO():
         StationIOData[786][get_time_interval(people[5][-6:], 15)][0] += 1
         StationIOData[786][get_time_interval(people[8][-6:], 15)][1] += 1
 
-def toHex(r, g, b):
-    color = "#"
-    color += str(hex(r)).replace('x','0')[-2:]
-    color += str(hex(g)).replace('x','0')[-2:]
-    color += str(hex(b)).replace('x','0')[-2:]
-    return color
-
-def getcolor(num, lim):
-    halfLim = lim / 2
-    cell = 255 / halfLim
-    r = 0
-    g = 0
-    b = 0
-    if num < halfLim:
-        r = int(cell * num)
-        g = 255
-    else:
-        g = int(max(0, 255 - ((num-halfLim)*cell)))
-        r = 255
-    return toHex(r, g, b)
+def calc_lasthw():
+    # 数据读取
+    PeopleBtwStationFile = open("./data/PeopleBtwStation.txt", "r")
+    PeopleBtwStationData = PeopleBtwStationFile.read().splitlines()
+    PeopleBtwStationFile.close()
+    pbsData = [x.split(',') for x in PeopleBtwStationData] # 站->站，人数
+    PeopleInCarTimeFile = open("./data/PeopleInCarTime.txt", "r")
+    PeopleInCarTimeData = PeopleInCarTimeFile.read().splitlines()
+    PeopleInCarTimeFile.close()
+    pictData = [x.split(',') for x in PeopleInCarTimeData] # 时长，人数
+    PeopleOutHomeTimeFile = open("./data/PeopleOutHomeTime.txt", "r")
+    PeopleOutHomeTimeData = PeopleOutHomeTimeFile.read().splitlines()
+    PeopleOutHomeTimeFile.close()
+    pohtData = [x.split(',') for x in PeopleOutHomeTimeData] # 时长，人数
+    # 生成对应的表格
+    initialData = ""
+    initialData += '<table border="1" cellpadding="0" cellspacing="0">'
+    initialData += '<tr><th>站->站</th><th>人数</th><th>时长</th><th>人数</th><th>时长</th><th>人数</th>'
+    depth = max(len(pbsData), len(pictData), len(pohtData))
+    # <div class="incar_cnt" style="width: {curCnt / 8000}%; background: {getcolor(curCnt, 800000)};">{curCnt}</div>
+    for i in range(depth):
+        initialData += '<tr>'
+        initialData += f'<td>{pbsData[i][0]}</td><td><div class="incar_cnt" style="width: {int(pbsData[i][1]) / 65}%; background: {getcolor(int(pbsData[i][1]), 6500)};">{pbsData[i][1]}</div></td>' if i < len(pbsData) else '<td></td><td></td>'
+        initialData += f'<td>{pictData[i][0]}</td><td><div class="incar_cnt" style="width: {int(pictData[i][1]) / 1200}%; background: {getcolor(int(pictData[i][1]), 120000)};">{pictData[i][1]}</div></td>' if i < len(pictData) else '<td></td><td></td>'
+        initialData += f'<td>{pohtData[i][0]}</td><td><div class="incar_cnt" style="width: {int(pohtData[i][1]) / 410}%; background: {getcolor(int(pohtData[i][1]), 41000)};">{pohtData[i][1]}</div></td>' if i < len(pohtData) else '<td></td><td></td>'
+        initialData += '</tr>'
+    return initialData
 
 def get_stationIO_cell(time_interval, cnt, divisor=50, timeTag=True, font_size=12):
     time_interval_formatted = f'{format_time_interval(time_interval[0])}~{format_time_interval(time_interval[1])}'
@@ -143,7 +173,7 @@ def get_stationIO_cell(time_interval, cnt, divisor=50, timeTag=True, font_size=1
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", last_table=indexData)
 
 @app.route("/SubwayPeople")
 def SubwayPeople():
@@ -232,6 +262,7 @@ def LineIO():
 
 if __name__ == "__main__":
     readInData()
+    indexData = calc_lasthw()
     calc_SubwayPeople()
     calc_stationIO()
     app.run(debug=True) 

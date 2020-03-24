@@ -22,10 +22,14 @@
 }
 
 .navigator_item {
-    float: left;
+    /* float: left; */
     width: 33%;
     text-align: center;
     font-size: 1.2em;
+    background: #a0a0a0;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
 }
 
 a {
@@ -36,6 +40,14 @@ a:hover {
     color: violet;
 }
 
+.nonehover {
+    background: none;
+}
+
+.nonehover:hover {
+    color: black;
+}
+
 .activated {
     color: red;
 }
@@ -43,6 +55,7 @@ a:hover {
 footer {
     color: gray;
     text-align: center;
+    margin: auto;
 }
 
 table {
