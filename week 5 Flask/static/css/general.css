@@ -52,35 +52,62 @@ table {
 }
 
 td {
-    overflow: hidden;
+    overflow: visible;
 }
 
 .incar_cnt {
     text-align: left;
-    padding-top:1%;
+    padding-top: 1%;
     padding-bottom: 1%;
 }
 
-.downStation {
-    font-size: 2px;
-    background: #9600FF;
-    display:inline-block;
+.upStation {
+    /* font-size: 12px; */
+    background: #B51F1A;
+    /* display:inline-block; */
+    text-align: right;
+    float: left;
+    /* padding-left: 1em; */
+    height: 1em;
+    color: yellowgreen;
 }
 
-.upStation {
-    font-size: 2px;
-    background: #B51F1A;
-    display:inline-block;
+.upStation_inner {
+    float: left;
+    text-align: right;
+}
+
+.downStation {
+    /* font-size: 12px; */
+    background: #9600FF;
+    text-align: left;
+    float: right;
+    /* padding-right: 1em; */
+    /* display:inline-block; */
+    height: 1em;
+    color: yellowgreen;
+}
+
+.downStation_inner {
+    float: right;
+    text-align: left;
 }
 
 .timeTag {
-    font-size: 2px;
+    /* font-size: 12px; */
     background: white;
-    display:inline-block;
+    display: inline-block;
+    height: 1em;
 }
 
 .tdLine {
     padding: 0;
     text-align: center;
-    float:inline-start;
+    float: inline-start;
+}
+
+.hint {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 1em;
 }

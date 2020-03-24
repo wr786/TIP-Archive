@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>进出站人数时间分布 | 北京地铁统计信息</title>
-    <script src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+    <!-- <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script> -->
     <link rel="stylesheet" href="{{ url_for('static',filename='css/general.css') }}">
     <!-- <link rel="stylesheet" href="../static/css/general.css"> -->
     <!-- 仅测试用！ -->
@@ -20,8 +20,7 @@
             <a class="navigator_item" href="/LineIO">线路进出站人数分布</a>
         </div>
         <form action="/StationIO" method="POST">
-            {{form_innerHTML|safe}}
-            <br/>
+            {{form_innerHTML|safe}} <br />
             <input type="submit">
         </form>
         <table border="1" cellpadding='0' cellspacing='0'>
