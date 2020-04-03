@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>对局 | 五子棋Zone</title>
+    <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/general.css') }}">
+</head>
+
+<body>
+    <div class="main">
+        <table id="grid" class="playground"></table>
+    </div>
+    <footer>
+        <p>©2020 wr786</p>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='js/drawMap.js') }}"></script>
+</body>
