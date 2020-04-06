@@ -16,29 +16,6 @@ footer {
     margin: auto;
 }
 
-#grid {
-    display: inline-block;
-    background-color: #F8B77F;
-    background-image: linear-gradient(#F5BA80, #F4AC65);
-    box-shadow: 10px 10px 0 #8C4D21, 9px 9px 0 #8C4D21, 8px 8px 0 #8C4D21, 7px 7px 0 #8C4D21, 6px 6px 0 #8C4D21, 5px 5px 0 #8C4D21, 4px 4px 0 #8C4D21, 3px 3px 0 #8C4D21, 2px 2px 0 #8C4D21, 1px 1px 0 #8C4D21;
-    padding: 10px;
-}
-
-.row {
-    content: "";
-    display: block;
-    clear: both;
-}
-
-.cell {
-    display: block;
-    float: left;
-    position: relative;
-    width: 30px;
-    height: 30px;
-    margin: 1px;
-}
-
 .black {
     box-shadow: inset 5px 5px 5px rgba(180, 180, 180, .5), 1px 1px 1px rgba(100, 100, 100, .2);
     background-color: #000;
@@ -58,11 +35,18 @@ footer {
     border-radius: 50%;
 }
 
-
 .black.last {
     box-shadow: inset 5px 5px 5px rgba(180, 180, 180, .5), 0 0 2px 2px #CF3D14;
 }
 
 .white.last {
     box-shadow: inset -5px -5px 15px rgba(180, 180, 180, .5), 0 0 2px 2px #CF3D14;
+}
+
+fieldset {
+    width: 40%;
+}
+
+table {
+    width: 80%;
 }

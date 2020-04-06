@@ -2,18 +2,87 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>对局 | 五子棋Zone</title>
+    <title>{{userName}}, 对局 | 五子棋Zone</title>
     <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/general.css') }}">
 </head>
 
 <body>
     <div class="main">
-        <table id="grid" class="playground"></table>
+        <table id="grid" border="1" cellpadding='0' cellspacing='0'></table>
+        <div id="info">
+            <div class="welcome">欢迎您！<div id="userName">{{userName}}</div></div>
+            <div class="rival">请输入您想要对战的对手的ID:<input class="text" id="rival_userName" /></div>
+        </div>
     </div>
     <footer>
         <p>©2020 wr786</p>
     </footer>
     
     <script src="{{ url_for('static', filename='js/drawMap.js') }}"></script>
+    <script>
+        function linkReady() {
+            rival_id = $("#rival_userName").val();
+            if($.trim(rival_id) == "") {
+                return false;
+            }
+            return true;
+        }
+
+        function removeLast() {
+            for(var i = 0; i < 15; i++)
+                for(var j = 0; j < 15; j++) {
+                    tmp = "#c_" + String(i) + "_" + String(j);
+                    $(tmp).removeClass("last");
+                }
+        }
+    
+        var waiting = false;
+
+        function placeChess(that) {
+            if(waiting) {
+                alert("现在还没轮到您下棋！");
+                return false;
+            }
+            if(linkReady() == false) {
+                alert("请先输入您想要对战的对手的ID！");
+                return false;
+            }
+            pos_x = $(that).attr("x");
+            pos_y = $(that).attr("y");
+            thisSide = $(document).attr('title').split(',')[0];
+            console.log(thisSide);
+            thatSide = $("#rival_userName").val();
+            $("#rival_userName").attr("disabled", "disabled"); // 防止游玩过程中还乱改
+            var sendData = {fromSide:thisSide, toSide:thatSide, chess_x:pos_x, chess_y:pos_y};
+            $.post('/receiveMsg', sendData, function(rtnSvr) {
+                removeLast();
+                $(that).addClass(rtnSvr); // 颜色
+                $(that).addClass("last");
+                waiting = true;
+            })
+        }
+
+        function getMsgFromSvr() {
+            thisSide = $(document).attr('title').split(',')[0];
+            thatSide = $("#rival_userName").val();
+            if(linkReady() == false) return false;
+            var sides = {fromSide:thisSide, toSide:thatSide};
+            $.post("/getMsg", sides, function(rtnSvr) {
+                if(rtnSvr == "") {
+                    return false;
+                } // 就是没数据
+                data = rtnSvr.split(','); // 颜色，x, y
+                that = "#c_" + String(data[1]) + "_" + String(data[2]);
+                removeLast();
+                $(that).addClass(data[0]);
+                $(that).addClass("last");
+                waiting = false;
+            })
+            return true;
+        }
+
+        setInterval("getMsgFromSvr()", 3000);
+
+    </script>
 </body>

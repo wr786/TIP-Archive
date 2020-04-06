@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>登陆 | 五子棋Zone</title>
+    <script src="./static/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="./static/css/general.css">
+</head>
+
+<body>
+    <div class="main">
+        <fieldset>
+            <legend><div class="hint">登陆</div></legend>
+            <form action="/login" method="POST">
+                <label>网　　名：</label><input name="username" type="text" /> <br/>
+                <label>密　　码：</label><input name="password" type="password" /> <br/>
+                <input type="submit">
+            </form>
+            <div class="hint">没有账号？<a href="/register">点此注册</a></div>
+        </fieldset>
+    </div>
+    <footer>
+        <p>©2020 wr786</p>
+    </footer>    
+</body>

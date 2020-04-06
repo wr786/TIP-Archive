@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{{registerMsg}}</title>
+        <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+    </head>
+    <body>
+        <div class="main">
+            <a href="/">返回首页</a>
+        </div>
+        <script>
+            title = $(document).attr('title');
+            alert(title);
+            if(title == "非常抱歉！您的用户名刚刚已经被注册！请换一个用户名注册。") {
+                window.location.replace("/register");
+            } else {
+                window.location.replace("/login");
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{{loginMsg}}</title>
+        <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+    </head>
+    <body>
+        <div class="main">
+            <a href="/">返回首页</a>
+        </div>
+        <script>
+            title = $(document).attr('title');
+            alert(title);
+            if(title != "登陆成功，正在跳转到首页…") {
+                window.location.replace("/login");
+            } else {
+                window.location.replace("/");
+            }
+        </script>
+    </body>
+</html>

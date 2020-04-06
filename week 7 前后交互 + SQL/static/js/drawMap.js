@@ -1,9 +1,16 @@
 var tds = [];
-for(var i = 0; i < 15; i++) {
-    tds.push("<div class='row'>");
+tds.push("<tr>")
+for(var i = 0; i < 1; i++) {
     for(var j = 0; j < 15; j++) {
-        tds.push("<div class='cell' id='c_" + i + "_" + j + "'></div>");
+        tds.push("<th class='cell' id='c_" + i + "_" + j + "'onclick='placeChess(this)' x='" + i + "' y='" + j + "'>&nbsp;</th>");
     }
-    tds.push("</div>")
-    $('#grid').html(tds.join(''));
 }
+tds.push("</tr>")
+for(var i = 1; i < 15; i++) {
+    tds.push("<tr class='row'>");
+    for(var j = 0; j < 15; j++) {
+        tds.push("<td class='cell' id='c_" + i + "_" + j + "'onclick='placeChess(this)' x='" + i + "' y='" + j + "'>&nbsp;</td>");
+    }
+    tds.push("</tr>")
+}
+$('#grid').html(tds.join(''));

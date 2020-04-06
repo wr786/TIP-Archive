@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>注册 | 五子棋Zone</title>
+    <script src="./static/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="./static/css/general.css">
+</head>
+
+<body>
+    <div class="main">
+        <fieldset>
+            <legend><div class="hint">注册</div></legend>
+            <form action="/register" method="POST">
+                <label>网　　名：</label><input name="username" id="username" type="text" /> 
+                <span id="checkStatus" style="display: none;">()</span> <br/>
+                <label>密　　码：</label><input name="password" id="password" type="password" /> <br/>
+                <label>确认密码：</label><input name="passwordCheck" id="passwordCheck" type="password" /> <br/>
+                <input type="submit">
+            </form>
+        </fieldset>
+    </div>
+    <footer>
+        <p>©2020 wr786</p>
+    </footer>    
+
+    <script>
+        $("#username").blur(function() {
+            var username = $("#username").val();
+            if($.trim(username) == "") return false;
+            $.post("/CheckUserID", {username:username}, function(rtnSvr) {
+                if(rtnSvr == "1") {
+                    $("#checkStatus").html("恭喜您！该用户名可以注册！").css("display", "inline").css("color", "purple");
+                } else {
+                    $("#checkStatus").html("该用户名已被注册，请换一个！").css("display", "inline").css("color", "purple");
+                }
+            })
+        })
+        $("form").submit(function() {
+            var pwd = $("#password").val();
+            var pwd2 = $("#passwordCheck").val();
+            if(pwd != pwd2) {
+                alert("两次密码输入不一致！");
+                return false;
+            }
+            if($.trim($("#username").val()) == "") {
+                alert("请输入用户名!");
+                return false;
+            }
+        })
+    </script>
+
+</body>
