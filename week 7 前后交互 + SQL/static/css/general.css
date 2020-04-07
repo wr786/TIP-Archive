@@ -16,6 +16,26 @@ footer {
     margin: auto;
 }
 
+fieldset {
+    margin:auto;
+    height: 50%;
+    width: 40%;
+}
+
+table {
+    width: 80%;
+}
+
+.main {
+    margin-top: 20px;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+html {
+    color: -internal-root-color;
+}
+
 .black {
     box-shadow: inset 5px 5px 5px rgba(180, 180, 180, .5), 1px 1px 1px rgba(100, 100, 100, .2);
     background-color: #000;
@@ -24,6 +44,14 @@ footer {
 .white {
     box-shadow: inset -5px -5px 15px rgba(180, 180, 180, .5), 1px 1px 1px rgba(100, 100, 100, .2);
     background-color: #FFF;
+}
+
+.black.last {
+    box-shadow: inset 5px 5px 5px rgba(180, 180, 180, .5), 0 0 2px 2px #CF3D14;
+}
+
+.white.last {
+    box-shadow: inset -5px -5px 15px rgba(180, 180, 180, .5), 0 0 2px 2px #CF3D14;
 }
 
 .black, .white {
@@ -35,18 +63,78 @@ footer {
     border-radius: 50%;
 }
 
-.black.last {
-    box-shadow: inset 5px 5px 5px rgba(180, 180, 180, .5), 0 0 2px 2px #CF3D14;
+.cell::before, .cell::after {
+    z-index: 0;
+    content: "";
+    display: block;
+    position: absolute;
+    background-color: #000;
 }
 
-.white.last {
-    box-shadow: inset -5px -5px 15px rgba(180, 180, 180, .5), 0 0 2px 2px #CF3D14;
+.cell::before {
+    top: -1px;
+    left: 14px;
+    height: 32px;
+    width: 2px;
 }
 
-fieldset {
-    width: 40%;
+.cell::after {
+    top: 14px;
+    left: -1px;
+    height: 2px;
+    width: 32px;
 }
 
-table {
-    width: 80%;
+.cell {
+    display: block;
+    float: left;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+}
+
+#grid {
+    display: inline-block;
+    /* float: left; */
+    background-color: #F8B77F;
+    background-image: linear-gradient(#F5BA80, #F4AC65);
+    box-shadow: 10px 10px 0 #8C4D21, 9px 9px 0 #8C4D21, 8px 8px 0 #8C4D21, 7px 7px 0 #8C4D21, 6px 6px 0 #8C4D21, 5px 5px 0 #8C4D21, 4px 4px 0 #8C4D21, 3px 3px 0 #8C4D21, 2px 2px 0 #8C4D21, 1px 1px 0 #8C4D21;
+    padding: 10px;
+}
+
+.row::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.row:first-child > .cell::before {
+    top: 14px;
+}
+
+.row:last-child > .cell::before {
+    height: 16px;
+}
+
+.cell:first-child::after {
+    left: 14px;
+}
+
+.cell:last-child::after {
+    width: 17px;
+}
+
+.cell:hover {
+    background-color: #AAA;
+}
+
+#userName{
+    display: inline;
+}
+
+#info {
+    /* float: right; */
+    /* display: inline-block; */
+    text-align: center;
 }

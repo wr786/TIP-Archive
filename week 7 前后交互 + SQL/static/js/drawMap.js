@@ -1,16 +1,17 @@
 var tds = [];
-tds.push("<tr>")
+var SIZE = 15;
+tds.push("<div class='row'>")
 for(var i = 0; i < 1; i++) {
-    for(var j = 0; j < 15; j++) {
-        tds.push("<th class='cell' id='c_" + i + "_" + j + "'onclick='placeChess(this)' x='" + i + "' y='" + j + "'>&nbsp;</th>");
+    for(var j = 0; j < SIZE; j++) {
+        tds.push("<div class='cell' onclick='placeChess(this)' id='c_" + i + "_" + j + "' x='" + i + "' y='" + j + "'><div id='c"+i+j+"' x='" + i + "' y='" + j + "'></div></div>");
     }
 }
-tds.push("</tr>")
-for(var i = 1; i < 15; i++) {
-    tds.push("<tr class='row'>");
-    for(var j = 0; j < 15; j++) {
-        tds.push("<td class='cell' id='c_" + i + "_" + j + "'onclick='placeChess(this)' x='" + i + "' y='" + j + "'>&nbsp;</td>");
+tds.push("</div>")
+for(var i = 1; i < SIZE; i++) {
+    tds.push("<div class='row'>");
+    for(var j = 0; j < SIZE; j++) {
+        tds.push("<div class='cell' onclick='placeChess(this)' id='c_" + i + "_" + j + "' x='" + i + "' y='" + j + "'><div id='c"+i+j+"' x='" + i + "' y='" + j + "'></div></div>");
     }
-    tds.push("</tr>")
+    tds.push("</div>")
 }
 $('#grid').html(tds.join(''));

@@ -9,7 +9,7 @@ dbConn = sqlite3.connect('./data/userInfo.db', check_same_thread=False)
 
 lastChess = {} # 用来存棋
 blackHolder = {}
-whiteHolder = {}
+unlinked = {}
 
 # 用来加密密码，避免在数据库中明文保存密码
 def encrypt(pwd): 
@@ -32,11 +32,9 @@ def receiveMsg():
     sides = f'{fromSide}->{toSide}'
     antiSides = f'{toSide}->{fromSide}'
     lastChess.update({sides: (pos_x, pos_y)})
-    if sides not in blackHolder.keys() and sides not in whiteHolder.keys(): # 决定先后手
+    if sides not in blackHolder.keys(): # 决定先后手
         blackHolder.update({sides: fromSide})
         blackHolder.update({antiSides: fromSide})
-        whiteHolder.update({sides: fromSide})
-        whiteHolder.update({antiSides: fromSide})
     return "black" if blackHolder[sides] == fromSide else "white"
 
 @app.route('/getMsg', methods=["POST", "GET"])
@@ -45,6 +43,9 @@ def getMsg():
     toSide = request.form["toSide"]
     sides = f'{toSide}->{fromSide}'
     rtnMsg = ""
+    if sides in unlinked.keys():
+        unlinked.pop(sides)
+        return "unlink"
     if sides in lastChess.keys():
         pos = lastChess[sides]
         lastChess.pop(sides)
@@ -52,6 +53,29 @@ def getMsg():
         rtnMsg += f',{pos[0]},{pos[1]}'
     return rtnMsg
 
+@app.route("/clearBoard", methods=["POST", "GET"])
+def clearBoard():
+    fromSide = request.form["fromSide"]
+    toSide = request.form["toSide"]
+    sides = f'{fromSide}->{toSide}'
+    antiSides = f'{toSide}->{fromSide}'
+    if sides in lastChess.keys():
+        lastChess.pop(sides)
+    if antiSides in lastChess.keys():
+        lastChess.pop(antiSides)
+    if sides in blackHolder.keys():
+        blackHolder.pop(sides)
+    if antiSides in blackHolder.keys():
+        blackHolder.pop(antiSides)
+    return ""
+
+@app.route("/unlink", methods=["POST", "GET"])
+def unlink():
+    fromSide = request.form["fromSide"]
+    toSide = request.form["toSide"]
+    sides = f'{fromSide}->{toSide}'
+    unlinked.update({sides: True})
+    return ""
 
 @app.route('/login')
 def login_static():
@@ -101,9 +125,3 @@ if __name__ == "__main__":
     app.secret_key = os.urandom(24)
     app.run(port=80, debug=True)
     dbConn.close()
-
-#todo 判定五子棋是否已经存在于那个位置了
-#todo 判定五子棋输赢
-#todo 美化棋盘
-#todo 美化对局UI
-#todo 美化注册、登陆UI

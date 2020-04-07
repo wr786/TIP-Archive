@@ -5,11 +5,13 @@
     <title>{{userName}}, 对局 | 五子棋Zone</title>
     <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/general.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 </head>
 
 <body>
     <div class="main">
-        <table id="grid" border="1" cellpadding='0' cellspacing='0'></table>
+        <div id="grid"></div>
+        <br/><br/><br/>
         <div id="info">
             <div class="welcome">欢迎您！<div id="userName">{{userName}}</div></div>
             <div class="rival">请输入您想要对战的对手的ID:<input class="text" id="rival_userName" /></div>
@@ -21,6 +23,8 @@
     
     <script src="{{ url_for('static', filename='js/drawMap.js') }}"></script>
     <script>
+        var SIZE = 15;
+
         function linkReady() {
             rival_id = $("#rival_userName").val();
             if($.trim(rival_id) == "") {
@@ -29,14 +33,80 @@
             return true;
         }
 
+        function getChess(x, y) {
+            return "#c" + String(x) + String(y);
+        }
+
         function removeLast() {
-            for(var i = 0; i < 15; i++)
-                for(var j = 0; j < 15; j++) {
-                    tmp = "#c_" + String(i) + "_" + String(j);
+            for(var i = 0; i < SIZE; i++)
+                for(var j = 0; j < SIZE; j++) {
+                    tmp = getChess(i, j);
                     $(tmp).removeClass("last");
                 }
         }
     
+        function checkPlacable(x, y) {
+            that = getChess(x, y);
+            if($(that).hasClass("black") || $(that).hasClass("white")) {
+                alert("该位置已经有棋了！请换个位置再下！")
+                return false;
+            }
+        }
+
+        function isBlack(x, y) {
+            return $(getChess(x, y)).hasClass("black");
+        }
+
+        function isWhite(x, y) {
+            return $(getChess(x, y)).hasClass("white");
+        }
+
+        function checkWin() {
+            var flag = "";
+            // 检测竖直方向
+            for(var i = 0; i < SIZE-4; i++)
+                for(var j = 0; j < SIZE; j++) {
+                    if(isBlack(i, j) && isBlack(i+1, j) && isBlack(i+2, j) && isBlack(i+3, j) && isBlack(i+4, j)) flag = "black";
+                    else if(isWhite(i, j) && isWhite(i+1, j) && isWhite(i+2, j) && isWhite(i+3, j) && isWhite(i+4, j)) flag = "white";
+                }
+            if(flag != "") return flag;
+            // 检测水平方向
+            for(var i = 0; i < SIZE; i++)
+                for(var j = 0; j < SIZE-4; j++) {
+                    if(isBlack(i, j) && isBlack(i, j+1) && isBlack(i, j+2) && isBlack(i, j+3) && isBlack(i, j+4)) flag = "black";
+                    else if(isWhite(i, j) && isWhite(i, j+1) && isWhite(i, j+2) && isWhite(i, j+3) && isWhite(i, j+4)) flag = "white";
+                }
+            if(flag != "") return flag;
+            // 检测↘方向
+            for(var i = 0; i < SIZE-4; i++)
+                for(var j = 0; j < SIZE-4; j++) {
+                    if(isBlack(i, j) && isBlack(i+1, j+1) && isBlack(i+2, j+2) && isBlack(i+3, j+3) && isBlack(i+4, j+4)) flag = "black";
+                    else if(isWhite(i, j) && isWhite(i+1, j+1) && isWhite(i+2, j+2) && isWhite(i+3, j+3) && isWhite(i+4, j+4)) flag = "white";
+                }
+            if(flag != "") return flag;
+            // 检测↙方向
+            for(var i = 0; i < SIZE-4; i++)
+                for(var j = 4; j < SIZE; j++) {
+                    if(isBlack(i, j) && isBlack(i+1, j-1) && isBlack(i+2, j-2) && isBlack(i+3, j-3) && isBlack(i+4, j-4)) flag = "black";
+                    else if(isWhite(i, j) && isWhite(i+1, j-1) && isWhite(i+2, j-2) && isWhite(i+3, j-3) && isWhite(i+4, j-4)) flag = "white";
+                }
+            if(flag != "") return flag;
+            return false;
+        }
+
+        function clearBoard() {
+            for(var i = 0; i < SIZE; i++)
+                for(var j = 0; j < SIZE; j++) {
+                    $(getChess(i, j)).removeClass("last").removeClass("black").removeClass("white");
+                    // $(getChess(i, j)).addClass("cell");
+                }
+            thisSide = $(document).attr('title').split(',')[0];
+            thatSide = $("#rival_userName").val();
+            sides = {fromSide:thisSide, toSide:thatSide};
+            waiting = false;
+            $.post('/clearBoard', sides);
+        }
+
         var waiting = false;
 
         function placeChess(that) {
@@ -50,15 +120,25 @@
             }
             pos_x = $(that).attr("x");
             pos_y = $(that).attr("y");
+            that = $(getChess(pos_x, pos_y));
+            if(checkPlacable(pos_x, pos_y) == false) return false;
             thisSide = $(document).attr('title').split(',')[0];
-            console.log(thisSide);
             thatSide = $("#rival_userName").val();
             $("#rival_userName").attr("disabled", "disabled"); // 防止游玩过程中还乱改
             var sendData = {fromSide:thisSide, toSide:thatSide, chess_x:pos_x, chess_y:pos_y};
             $.post('/receiveMsg', sendData, function(rtnSvr) {
                 removeLast();
+                // $(that).removeClass("cell");
                 $(that).addClass(rtnSvr); // 颜色
                 $(that).addClass("last");
+                var win = checkWin();
+                if(win != false) {
+                    if(win == "black")
+                        alert("黑方胜！");
+                    else
+                        alert("白方胜！");
+                    clearBoard();
+                }
                 waiting = true;
             })
         }
@@ -72,17 +152,45 @@
                 if(rtnSvr == "") {
                     return false;
                 } // 就是没数据
+                if(rtnSvr == "unlink") {
+                    alert("您的对手离开了游戏！")
+                    clearBoard();
+                    return false;
+                }
                 data = rtnSvr.split(','); // 颜色，x, y
-                that = "#c_" + String(data[1]) + "_" + String(data[2]);
+                that = getChess(data[1], data[2]);
+                // that = "#c_" + String(data[1]) + "_" + String(data[2]);
                 removeLast();
+                // $(that).removeClass("cell");
                 $(that).addClass(data[0]);
                 $(that).addClass("last");
                 waiting = false;
+                var win = checkWin();
+                if(win != false) {
+                    if(win == "black")
+                        alert("黑方胜！");
+                    else
+                        alert("白方胜！");
+                    clearBoard();
+                }
             })
             return true;
         }
 
-        setInterval("getMsgFromSvr()", 3000);
+        function unlink() {
+            thisSide = $(document).attr('title').split(',')[0];
+            thatSide = $("#rival_userName").val();
+            if(linkReady() == false) return false;
+            var sides = {fromSide:thisSide, toSide:thatSide};
+            clearBoard();
+            $.post("/unlink", sides);
+        }; 
+
+        window.onbeforeunload = function() {
+            unlink();
+        } // 检测用户退出
+
+        setInterval("getMsgFromSvr()", 1000);
 
     </script>
 </body>
